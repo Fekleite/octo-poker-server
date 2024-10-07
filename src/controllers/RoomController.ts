@@ -9,6 +9,10 @@ interface JoinRequest {
   socket: Socket
 }
 
+interface RemoveUsersRequest {
+  socket: Socket
+}
+
 interface RoomUser {
   id: string;
   username: string;
@@ -32,4 +36,12 @@ export function join({ socket, payload }: JoinRequest) {
   rooms[roomCode].push({ id: socket.id, username });
 
   io.to(roomCode).emit('room-users', rooms[roomCode]);
+}
+
+export function removeUsers({ socket }: RemoveUsersRequest) {
+  for (const roomCode in rooms) {
+    rooms[roomCode] = rooms[roomCode].filter((user) => user.id !== socket.id);
+
+    io.to(roomCode).emit('room-users', rooms[roomCode]);
+  }
 }
