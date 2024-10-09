@@ -3,9 +3,10 @@ import { createServer } from 'http';
 import { Server } from 'socket.io';
 
 import { CloseEventBody, CreateEventBody, JoinEventBody, LeaveEventBody } from '../@types/room';
-import RoomController from '../controllers/RoomController';
+import { SendEventBody } from '../@types/vote';
 
-import { sendVote } from '../controllers/UserController';
+import RoomController from '../controllers/RoomController';
+import VoteController from '../controllers/VoteController';
 
 const app = express()
 const server = createServer(app);
@@ -31,11 +32,9 @@ io.on('connection', (socket) => {
     RoomController.close({ socket, payload: body })
   })
 
-  // USer
-  socket.on('send-vote', ({ roomCode, vote }: { roomCode: string; vote: string }) => {
-    const payload = { roomCode, vote }
-
-    sendVote({ socket, payload })
+  // Vote
+  socket.on('send-vote', (body: SendEventBody) => {
+    VoteController.send({ socket, payload: body })
   })
 });
 

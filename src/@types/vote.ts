@@ -1,0 +1,18 @@
+import { Socket } from "socket.io";
+
+export interface Vote {
+  value: string | number;
+  user: string;
+}
+
+export interface SendEventBody {
+  room: {
+    code: string
+  },
+  value: string | number
+}
+
+export interface SendEvent {
+  socket: Socket;
+  payload: SendEventBody
+}
