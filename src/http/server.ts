@@ -36,11 +36,9 @@ io.on('connection', (socket) => {
   socket.on('send-vote', (body: SendEventBody) => {
     VoteController.send({ socket, payload: body })
   })
-
   socket.on('reveal-votes', (body: RevealEventBody) => {
     VoteController.reveal({ socket, payload: body })
   })
-
   socket.on('reset-votes', (body: ResetEventBody) => {
     VoteController.reset({ socket, payload: body })
   })
