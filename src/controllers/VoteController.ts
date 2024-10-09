@@ -1,4 +1,4 @@
-import { RevealEvent, SendEvent, Vote } from "../@types/vote"
+import { ResetEvent, RevealEvent, SendEvent, Vote } from "../@types/vote"
 import { io } from "../http/server"
 
 interface VotesByRoom {
@@ -48,6 +48,18 @@ class VoteController {
     const roomVotes = this.votes[room.code]
     
     io.to(room.code).emit('votes-room', { votes: roomVotes })
+  }
+
+  reset({ socket, payload }: ResetEvent) {
+    const { room } = payload
+
+    if (!this.votes[room.code]) {
+      socket.emit('error', { error: "This room doesn't exists!" })
+    }
+
+    this.votes[room.code] = []
+
+    io.to(room.code).emit('votes-room', { votes: [] })
   }
 }
 

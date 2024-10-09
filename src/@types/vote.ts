@@ -27,3 +27,9 @@ export interface RevealEvent {
   socket: Socket;
   payload: RevealEventBody
 }
+
+export interface ResetEventBody extends RevealEventBody {}
+
+export interface ResetEvent extends RevealEvent{
+  payload: ResetEventBody
+}
