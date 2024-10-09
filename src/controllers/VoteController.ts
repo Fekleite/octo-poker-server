@@ -21,7 +21,7 @@ class VoteController {
       this.votes[room.code].map(vote => {
         if (vote.user === socket.id) {
           return {
-            ...vote,
+            user: vote.user,
             value,
           }
         }
@@ -35,7 +35,7 @@ class VoteController {
       })
     }
 
-    io.to(room.code).emit('vote-user', { user: socket.id, value })
+    io.to(room.code).emit('on-vote-was-send', { user: socket.id })
   }
 
   reveal({ socket, payload }: RevealEvent) {
@@ -43,11 +43,13 @@ class VoteController {
 
     if (!this.votes[room.code]) {
       socket.emit('error', { error: "There isn't votes in this room!" })
+
+      return;
     }
 
     const roomVotes = this.votes[room.code]
     
-    io.to(room.code).emit('votes-room', { votes: roomVotes })
+    io.to(room.code).emit('on-votes-were-reveal', { votes: roomVotes })
   }
 
   reset({ socket, payload }: ResetEvent) {
@@ -55,11 +57,13 @@ class VoteController {
 
     if (!this.votes[room.code]) {
       socket.emit('error', { error: "This room doesn't exists!" })
+
+      return;
     }
 
     this.votes[room.code] = []
 
-    io.to(room.code).emit('votes-room', { votes: [] })
+    io.to(room.code).emit('on-votes-were-reset', { votes: [] })
   }
 }
 
