@@ -1,6 +1,5 @@
-import { Socket } from "socket.io";
-import { io } from "../http/server";
 import { CloseEvent, CreateEvent, JoinEvent, LeaveEvent, Room } from "../@types/room";
+import { io } from "../http/server";
 
 interface RoomsByCode {
   [key: string]: Room;
