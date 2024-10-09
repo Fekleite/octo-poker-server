@@ -3,7 +3,7 @@ import { createServer } from 'http';
 import { Server } from 'socket.io';
 
 import { CloseEventBody, CreateEventBody, JoinEventBody, LeaveEventBody } from '../@types/room';
-import { SendEventBody } from '../@types/vote';
+import { RevealEventBody, SendEventBody } from '../@types/vote';
 
 import RoomController from '../controllers/RoomController';
 import VoteController from '../controllers/VoteController';
@@ -35,6 +35,10 @@ io.on('connection', (socket) => {
   // Vote
   socket.on('send-vote', (body: SendEventBody) => {
     VoteController.send({ socket, payload: body })
+  })
+
+  socket.on('reveal-votes', (body: RevealEventBody) => {
+    VoteController.reveal({ socket, payload: body })
   })
 });
 

@@ -16,3 +16,14 @@ export interface SendEvent {
   socket: Socket;
   payload: SendEventBody
 }
+
+export interface RevealEventBody {
+  room: {
+    code: string
+  }
+}
+
+export interface RevealEvent {
+  socket: Socket;
+  payload: RevealEventBody
+}
