@@ -1,4 +1,4 @@
-import { ResetEvent, RevealEvent, SendEvent, Vote } from "../@types/vote"
+import { RemoveEvent, ResetEvent, RevealEvent, SendEvent, Vote } from "../@types/vote"
 import { io } from "../http/server"
 
 interface VotesByRoom {
@@ -15,27 +15,27 @@ class VoteController {
       this.votes[room.code] = []
     }
 
-    const userAlreadyVoted = this.votes[room.code].find(vote => vote.user === socket.id)
-
-    if (userAlreadyVoted) {
-      this.votes[room.code].map(vote => {
-        if (vote.user === socket.id) {
-          return {
-            user: vote.user,
-            value,
-          }
-        }
-
-        return vote;
-      })
-    } else {
-      this.votes[room.code].push({ 
-        user: socket.id,
-        value,
-      })
-    }
+    this.votes[room.code].push({ 
+      user: socket.id,
+      value,
+    })
 
     io.to(room.code).emit('on-vote-was-send', { user: socket.id })
+  }
+
+  remove({ socket, payload }: RemoveEvent) {
+    const { room } = payload
+
+    if (!this.votes[room.code]) {
+      socket.emit('error', { error: "This room doesn't exists!" })
+
+      return;
+    }
+
+    const otherVotes = this.votes[room.code].filter(vote => vote.user !== socket.id)
+    this.votes[room.code] = [...otherVotes]
+
+    io.to(room.code).emit('on-vote-was-remove', { user: socket.id })
   }
 
   reveal({ socket, payload }: RevealEvent) {

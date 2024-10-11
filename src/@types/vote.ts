@@ -33,3 +33,9 @@ export interface ResetEventBody extends RevealEventBody {}
 export interface ResetEvent extends RevealEvent{
   payload: ResetEventBody
 }
+
+export interface RemoveEventBody extends RevealEventBody {}
+
+export interface RemoveEvent  extends RevealEvent {
+  payload: RemoveEventBody
+}
