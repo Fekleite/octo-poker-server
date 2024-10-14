@@ -15,21 +15,24 @@ class VoteController {
       this.votes[room.code] = []
     }
 
+    this.votes[room.code] = this.votes[room.code].filter(vote => vote.user !== socket.id)
+
     this.votes[room.code].push({ 
       user: socket.id,
       value,
     })
 
-    io.to(room.code).emit('vote-sent', { user: socket.id, value })
+    io.to(room.code).emit('vote-sent', { votes: this.votes[room.code] })
   }
 
   remove({ socket, payload }: RemoveEvent) {
     const { room } = payload
 
     const otherVotes = this.votes[room.code].filter(vote => vote.user !== socket.id)
+
     this.votes[room.code] = [...otherVotes]
 
-    io.to(room.code).emit('vote-remove')
+    io.to(room.code).emit('vote-remove', { votes: this.votes[room.code] })
   }
 
   reveal({ socket, payload }: RevealEvent) {
